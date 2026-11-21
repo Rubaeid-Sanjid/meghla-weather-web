@@ -1,23 +1,36 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import { getGeoLocation } from "../services/geo-location";
+import { useNavigate } from "react-router";
+
 const LocationsModal = ({ onClose }) => {
+  const navigate = useNavigate();
   const [city, setCity] = useState("");
+  const [error, setError] = useState("");
+
+  const goTOWeatherPage = (locationData) => {
+    navigate("/weather", { state: { locationData } });
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the form submission logic here
+    
     const enteredCity = city.trim();
     if (enteredCity) {
       try {
         const locationData = await getGeoLocation(enteredCity);
-        console.log("Location data:", locationData);
+        // console.log("Location data:", locationData);
+        if (!locationData) {
+          setError("No location data found for the entered city.");
+        } else {
+          goTOWeatherPage(locationData);
+        }
       } catch (error) {
         console.error("Error fetching geo location data:", error);
       }
-      onClose(); // Close the modal after submission
+      onClose(); 
     } else {
-      console.log("Please enter a city name.");
+      setError("Please enter a city name.");
     }
   };
 
@@ -25,7 +38,8 @@ const LocationsModal = ({ onClose }) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        console.log("Using current location:", latitude, longitude);
+        // console.log("Using current location:", latitude, longitude);
+        goTOWeatherPage({ name: "Your Current Location", latitude, longitude });
         onClose();
       }, (error) => {
         console.error("Error getting location:", error);
@@ -73,6 +87,8 @@ const LocationsModal = ({ onClose }) => {
             Use My Location
           </button>
         </div>
+
+        {error && <p className="text-red-500 mt-2">{error}</p>}
       </div>
     </div>
   );
