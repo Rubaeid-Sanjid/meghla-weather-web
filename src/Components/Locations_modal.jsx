@@ -16,6 +16,7 @@ const LocationsModal = ({ onClose }) => {
     e.preventDefault();
     
     const enteredCity = city.trim();
+    
     if (enteredCity) {
       try {
         const locationData = await getGeoLocation(enteredCity);
@@ -28,7 +29,9 @@ const LocationsModal = ({ onClose }) => {
       } catch (error) {
         console.error("Error fetching geo location data:", error);
       }
-      onClose(); 
+
+      onClose();
+
     } else {
       setError("Please enter a city name.");
     }

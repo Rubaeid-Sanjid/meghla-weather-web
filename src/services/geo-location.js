@@ -1,7 +1,7 @@
 export const getGeoLocation = async (city) => {
     // console.log("Getting current location for city:", city);
 
-    const apiKey = `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=10&language=en&format=json`; // Replace with your actual API key
+    const apiKey = `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=10&language=en&format=json`; 
 
     const response = await fetch(apiKey);
 
