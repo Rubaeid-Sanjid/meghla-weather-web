@@ -169,17 +169,38 @@ export const WMO_CODES = {
     },
 };
 
-export const getWeather = async (place) => {
- const { name, latitude, longitude } = place; 
-  const apiKey = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&current=temperature_2m,rain,showers,precipitation,relative_humidity_2m,is_day,wind_speed_10m,wind_direction_10m,apparent_temperature,weather_code,snowfall`;
+export const getWeather = async (place, { signal } = {}) => {
+    const { name, latitude, longitude } = place;
+    const params = new URLSearchParams({
+        latitude: String(latitude),
+        longitude: String(longitude),
+        current: [
+            "temperature_2m",
+            "relative_humidity_2m",
+            "is_day",
+            "wind_speed_10m",
+            "wind_direction_10m",
+            "apparent_temperature",
+            "weather_code",
+            "precipitation",
+        ].join(","),
+        wind_speed_unit: "ms",
+        timezone: "auto",
+    });
+    const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?${params}`,
+        { signal },
+    );
 
-    const response = await fetch(apiKey);
+    if (!response.ok) {
+        throw new Error("Could not load weather data. Please try again.");
+    }
+
     const data = await response.json();
-    
     const now = data.current;
 
     if (!now) {
-        throw new Error("Failed to fetch weather data");
+        throw new Error("Weather data is unavailable for this location.");
     }
 
     const weather = WMO_CODES[now.weather_code] || {
@@ -189,22 +210,21 @@ export const getWeather = async (place) => {
         label: "Unknown",
     };
 
-    const icon = weather.icon === "☀️" && now.is_day === 0 ? "Clear Night 🌙" : weather.icon;
+    const icon = now.weather_code === 0 && now.is_day === 0 ? "🌙" : weather.icon;
 
     return {
         location: name,
         temperature: Math.round(now.temperature_2m),
         humidity: now.relative_humidity_2m,
-        windSpeed: now.wind_speed_10m,
+        windSpeed: Math.round(now.wind_speed_10m * 10) / 10,
         windDirection: now.wind_direction_10m,
         feelsLike: Math.round(now.apparent_temperature),
-        // weatherCode: now.weather_code,
+        weatherCode: now.weather_code,
         isDay: now.is_day,
-        // latitude,
-        // longitude,
+        precipitation: now.precipitation,
         condition: weather.condition,
         description: weather.description,
-        icon: icon,
+        icon,
         conditionLabel: weather.label,
     };
 };

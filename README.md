@@ -1,16 +1,27 @@
-# React + Vite
+# Meghla Weather
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive weather app for searching cities or checking the weather at your current location. It shows live conditions and practical suggestions based on the weather.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Search for a city and resolve it to coordinates with Open-Meteo geocoding.
+- Use browser location detection to load local weather.
+- View current temperature, humidity, wind speed, feels-like temperature, and WMO weather conditions.
+- Get simple recommendations based on rain, temperature, humidity, and wind.
+- Responsive layouts for mobile and desktop.
 
-## React Compiler
+Weather and geocoding data are provided by [Open-Meteo](https://open-meteo.com/); no API key is required. Current-location lookup requires browser permission and a secure context (HTTPS or localhost).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Development
 
-## Expanding the ESLint configuration
+```sh
+npm install
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Validation
+
+```sh
+npm run lint
+npm run build
+```
