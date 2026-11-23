@@ -103,9 +103,7 @@ const Weather = () => {
             </div>
           </section>
         )}
-      </div>
-
-      
+      </div>      
     </div>
   );
 };
